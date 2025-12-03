@@ -1,13 +1,18 @@
 document.getElementById("summarize").addEventListener("click", () => {
     const resultDiv = document.getElementById("result");
     const summaryType = document.getElementById("summary-type").value;
+    const summarizeBtn = document.getElementById("summarize");
 
-    resultDiv.innerHTML = '<div class="loader"></div>'
+    resultDiv.className = '';
+    resultDiv.innerHTML = '<div class="loading"><div class="loader"></div><div class="loading-text">Generating summary...</div></div>';
+    summarizeBtn.disabled = true;
 
     // 1. Get the user's API Key
     chrome.storage.sync.get(["geminiApiKey"], ({geminiApiKey}) => {
         if (!geminiApiKey) {
-            resultDiv.textContent = "No API Key Set. Click the gear icon to add one."
+            resultDiv.className = 'error';
+            resultDiv.textContent = "⚠️ No API Key Set. Please configure your API key in the extension settings.";
+            summarizeBtn.disabled = false;
             return;
         }
 
@@ -17,20 +22,28 @@ document.getElementById("summarize").addEventListener("click", () => {
                 
                 // Check for connection errors
                 if (chrome.runtime.lastError) {
-                    resultDiv.textContent = "Cannot summarize this page. Try reloading the page or use on a regular webpage (not chrome:// pages).";
+                    resultDiv.className = 'error';
+                    resultDiv.textContent = "⚠️ Cannot summarize this page. Try reloading the page or use on a regular webpage (not chrome:// pages).";
+                    summarizeBtn.disabled = false;
                     return;
                 }
                 
                 if(!response || !response.text) {
-                    resultDiv.textContent = "Couldn't extract text from this page.";
+                    resultDiv.className = 'error';
+                    resultDiv.textContent = "⚠️ Couldn't extract text from this page.";
+                    summarizeBtn.disabled = false;
                     return;
                 }
                 // Send text to Gemini
                 try {
                     const summary = await getGeminiSummary(response.text, summaryType, geminiApiKey);
+                    resultDiv.className = '';
                     resultDiv.textContent = summary;
                 } catch (error) {
-                    resultDiv.textContent = "Gemini error: " + error.message; 
+                    resultDiv.className = 'error';
+                    resultDiv.textContent = "⚠️ Gemini error: " + error.message; 
+                } finally {
+                    summarizeBtn.disabled = false;
                 }
             });
         });
@@ -95,13 +108,22 @@ async function getGeminiSummary(text, summaryType, apiKey) {
 
 document.getElementById("copy-btn").addEventListener("click", () => {
   const txt = document.getElementById("result").innerText;
-  if(!txt) return;
+  if(!txt || txt.includes('Select a summary type')) return;
 
   navigator.clipboard.writeText(txt).then(()=> {
     const btn = document.getElementById("copy-btn");
-    const old = btn.textContent;
-    btn.textContent = "Copied!";
-    setTimeout(()=> (btn.textContent = old), 2000);
+    const icon = document.getElementById("copy-icon");
+    const text = document.getElementById("copy-text");
+    
+    btn.classList.add('copied');
+    icon.textContent = "✓";
+    text.textContent = "Copied!";
+    
+    setTimeout(()=> {
+      btn.classList.remove('copied');
+      icon.textContent = "📋";
+      text.textContent = "Copy";
+    }, 2000);
   });
 });
 

@@ -5,12 +5,21 @@ document.addEventListener("DOMContentLoaded", ()=> {
 
     document.getElementById("save-button").addEventListener("click", ()=> {
         const apiKey = document.getElementById("api-key").value.trim();
+        const saveBtn = document.getElementById("save-button");
+        const successMsg = document.getElementById("success-message");
 
-        if(!apiKey) return;
+        if(!apiKey) {
+            document.getElementById("api-key").focus();
+            return;
+        }
+
+        saveBtn.disabled = true;
 
         chrome.storage.sync.set({geminiApiKey: apiKey}, ()=> {
-            document.getElementById("success-message").style.display = "block";
-            setTimeout(()=> window.close(), 1000);
+            successMsg.classList.add("show");
+            setTimeout(()=> {
+                window.close();
+            }, 1500);
         });
     });
 });

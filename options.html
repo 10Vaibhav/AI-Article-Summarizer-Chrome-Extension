@@ -1,72 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Extention options</title>
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            color: #4285f4;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #3367d6;
-        }
-
-        #success-message {
-            color: green;
-            margin-top: 10px;
-            display: none;
-        }   
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Options</title>
+    <link rel="stylesheet" href="options.css">
 </head>
 <body>
-    <h1>AI Summary Settings</h1>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span class="icon">⚙️</span>
+                AI Summary Settings
+            </h1>
+            <div class="subtitle">Configure your Gemini API key</div>
+        </div>
 
-    <div class="form-group">
-        <label for="api-key">Gemini API Key</label>
-        <input type="text" id="api-key" placeholder="Enter your Gemini API Key">
+        <div class="card">
+            <div class="form-group">
+                <label for="api-key">🔑 Gemini API Key</label>
+                <input 
+                    type="text" 
+                    id="api-key" 
+                    placeholder="AIza..."
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <div class="info-box">
+                    💡 Don't have an API key? Get one for free from 
+                    <a href="https://ai.google.dev/aistudio" target="_blank">Google AI Studio</a>
+                </div>
+            </div>
 
-        <p>
-            You can get an API key from 
-            <a href="https://ai.google.dev/aistudio" target="_blank">Google AI Studio</a>
-        </p>
+            <button id="save-button">
+                <span>💾</span>
+                <span>Save Settings</span>
+            </button>
+
+            <div id="success-message">
+                ✓ Settings saved successfully!
+            </div>
+        </div>
     </div>
-
-    <button id="save-button">Save Settings</button>
-    <p id="success-message">Settings saved successfully!</p>
 
     <script src="options.js"></script>
 </body>
